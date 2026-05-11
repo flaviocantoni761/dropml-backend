@@ -12,7 +12,7 @@
 require('dotenv').config();
 const express    = require('express');
 const axios      = require('axios');
-const sqlite3    = require('better-sqlite3');
+const sqlite3    = require('sqlite3').verbose();
 const cors       = require('cors');
 const crypto     = require('crypto');
 const { v4: uuidv4 } = require('uuid');
