@@ -19,7 +19,8 @@ const { v4: uuidv4 } = require('uuid');
 const path       = require('path');
 
 const app  = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || process.env.port || 3000;
+console.log('PORT ENV:', process.env.PORT);
 
 // ─── SERVIR PAINEL DO LOJISTA ─────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
