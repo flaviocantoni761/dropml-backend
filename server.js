@@ -12,14 +12,14 @@
 require('dotenv').config();
 const express    = require('express');
 const axios      = require('axios');
-const sqlite3    = require('sqlite3').verbose();
+const sqlite3    = require('better-sqlite3');
 const cors       = require('cors');
 const crypto     = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const path       = require('path');
 
 const app  = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 
 // ─── SERVIR PAINEL DO LOJISTA ─────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
@@ -1256,7 +1256,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 // ─── START ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀 DropML Backend rodando em http://localhost:${PORT}`);
   console.log(`   Auth ML:  http://localhost:${PORT}/auth/login`);
   console.log(`   API:      http://localhost:${PORT}/api/`);
