@@ -727,6 +727,13 @@ app.post('/webhooks/ml-orders', async (req, res) => {
     );
 
     console.log(`💰 Pedido ${orderId} salvo | Lucro: R$${profit.toFixed(2)}`);
+    // Notificar lojista por email
+await notificarLojista({
+  mlOrderId: mlOrderId,
+  title: product.title,
+  quantity: quantity,
+  buyerName: ${mlOrder.buyer?.first_name} ${mlOrder.buyer?.last_name}
+});
 
     // 6. Comprar do fornecedor com endereço do comprador como destino
     await purchaseFromSupplier(orderId, product, deliveryAddress, quantity);
