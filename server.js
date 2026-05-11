@@ -1263,4 +1263,3 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`   Dashboard:http://localhost:${PORT}/api/dashboard\n`);
 });
 
-module.exports = app;
