@@ -17,6 +17,30 @@ const cors       = require('cors');
 const crypto     = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const path       = require('path');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  }
+});
+
+async function notificarLojista(pedido) {
+  await transporter.sendMail({
+    from: process.env.GMAIL_USER,
+    to: process.env.GMAIL_USER,
+    subject: 🛒 Nova venda DropML — Pedido ${pedido.mlOrderId},
+    html: `
+      <h2>Nova venda recebida!</h2>
+      <p><b>Pedido ML:</b> ${pedido.mlOrderId}</p>
+      <p><b>Produto:</b> ${pedido.title}</p>
+      <p><b>Quantidade:</b> ${pedido.quantity}</p>
+      <p><b>Comprador:</b> ${pedido.buyerName}</p>
+    `
+  });
+}
 
 const app  = express();
 const PORT = process.env.PORT || process.env.port || 3000;
