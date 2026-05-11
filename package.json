@@ -18,7 +18,8 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "nodemailer": "^6.9.9",
   },
   "engines": {
     "node": ">=18.0.0"
