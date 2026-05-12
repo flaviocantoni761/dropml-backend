@@ -31,7 +31,7 @@ async function notificarLojista(pedido) {
   await transporter.sendMail({
     from: process.env.GMAIL_USER,
     to: process.env.GMAIL_USER,
-    subject: 🛒 Nova venda DropML — Pedido ${pedido.mlOrderId},
+    subject: Nova venda DropML — Pedido ${pedido.mlOrderId},
     html: `
       <h2>Nova venda recebida!</h2>
       <p><b>Pedido ML:</b> ${pedido.mlOrderId}</p>
