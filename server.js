@@ -1,9 +1,3 @@
-/**
-
-* DropML — Backend Server
-* Node.js + Express + PostgreSQL + Mercado Livre OAuth
-  */
-
 require(‘dotenv’).config();
 const express    = require(‘express’);
 const axios      = require(‘axios’);
