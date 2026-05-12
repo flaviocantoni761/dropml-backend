@@ -1,6 +1,6 @@
 /**
 
-- DropML — Backend Server
+* DropML — Backend Server
 - Node.js + Express + PostgreSQL + Mercado Livre OAuth
   */
 
