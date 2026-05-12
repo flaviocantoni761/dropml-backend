@@ -732,7 +732,7 @@ await notificarLojista({
   mlOrderId: mlOrderId,
   title: product.title,
   quantity: quantity,
-  buyerName: ${mlOrder.buyer?.first_name} ${mlOrder.buyer?.last_name}
+  buyerName: '${mlOrder.buyer?.first_name} ${mlOrder.buyer?.last_name}'
 });
 
     // 6. Comprar do fornecedor com endereço do comprador como destino
