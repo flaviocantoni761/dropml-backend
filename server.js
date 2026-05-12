@@ -41,7 +41,19 @@ async function notificarLojista(pedido) {
     `
   });
 }
-
+async function notificarComprador(telefone, pedido) {
+  try {
+    const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    await client.messages.create({
+      from: process.env.TWILIO_WHATSAPP_FROM,
+      to: whatsapp:+55${telefone},
+      body: Ola! Seu pedido ${pedido.mlOrderId} foi confirmado e esta sendo preparado para envio. Acompanhe pelo Mercado Livre.
+    });
+    console.log('WhatsApp enviado para comprador');
+  } catch (e) {
+    console.error('Erro WhatsApp:', e.message);
+  }
+}
 const app  = express();
 const PORT = process.env.PORT || process.env.port || 3000;
 console.log('PORT ENV:', process.env.PORT);
@@ -734,7 +746,9 @@ await notificarLojista({
   quantity: quantity,
   buyerName: '${mlOrder.buyer?.first_name} ${mlOrder.buyer?.last_name}'
 });
-
+if (mlOrder.buyer?.phone) {
+  await notificarComprador(mlOrder.buyer.phone.number, { mlOrderId });
+}
     // 6. Comprar do fornecedor com endereço do comprador como destino
     await purchaseFromSupplier(orderId, product, deliveryAddress, quantity);
 
