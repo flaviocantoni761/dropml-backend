@@ -46,7 +46,7 @@ async function notificarComprador(telefone, pedido) {
     const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     await client.messages.create({
       from: process.env.TWILIO_WHATSAPP_FROM,
-      to: whatsapp:+55${telefone},
+      to: 'whatsapp:+55${telefone}',
       body: Ola! Seu pedido ${pedido.mlOrderId} foi confirmado e esta sendo preparado para envio. Acompanhe pelo Mercado Livre.
     });
     console.log('WhatsApp enviado para comprador');
