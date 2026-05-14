@@ -1003,3 +1003,4 @@ console.log(`   API:      http://localhost:${PORT}/api/`);
 console.log(`   Dashboard:http://localhost:${PORT}/api/dashboard\n`);
 });
 // redeploy Thu May 14 15:42:15     2026
+// reconnect Thu May 14 15:57:18     2026
