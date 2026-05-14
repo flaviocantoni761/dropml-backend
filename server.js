@@ -1002,3 +1002,4 @@ console.log(`   Auth ML:  http://localhost:${PORT}/auth/login`);
 console.log(`   API:      http://localhost:${PORT}/api/`);
 console.log(`   Dashboard:http://localhost:${PORT}/api/dashboard\n`);
 });
+// redeploy Thu May 14 15:42:15     2026
