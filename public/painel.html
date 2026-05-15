@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DropML — Dropshipping Inteligente</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a25;
+    --border: #2a2a3a;
+    --accent: #ffe135;
+    --accent2: #ff6b35;
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --green: #39d98a;
+    --red: #ff4d6d;
+    --blue: #4d9fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,225,53,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,225,53,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  .header-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    background: rgba(255,225,53,0.1);
+    border: 1px solid rgba(255,225,53,0.3);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--surface);
+  }
+
+  .sidebar-title {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .search-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap input, .input-wrap select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-wrap input:focus, .input-wrap select:focus {
+    border-color: var(--accent);
+  }
+
+  .input-wrap select option { background: #1a1a25; }
+
+  .btn-search {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-search:hover { background: #ffd000; transform: translateY(-1px); }
+  .btn-search:active { transform: translateY(0); }
+  .btn-search:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* FILTERS */
+  .filter-section { display: flex; flex-direction: column; gap: 12px; }
+
+  .filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .range-display {
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  /* STATS SIDEBAR */
+  .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .stat-label { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 800; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.yellow { color: var(--accent); }
+
+  /* CONTENT AREA */
+  .content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .status-dot.active {
+    background: var(--green);
+    animation: pulse 1.5s infinite;
+  }
+  .status-dot.loading {
+    background: var(--accent);
+    animation: pulse 0.8s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    color: #000;
+  }
+
+  /* PRODUCTS GRID */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .product-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(255,225,53,0.08);
+  }
+
+  .spread-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  .spread-badge.high { background: var(--green); }
+  .spread-badge.medium { background: var(--accent); }
+  .spread-badge.low { background: var(--muted); color: #fff; }
+
+  .card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    background: #fff;
+    padding: 10px;
+  }
+
+  .card-img-placeholder {
+    width: 100%;
+    height: 160px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .card-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .price-box {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .price-box-label {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .price-box-value {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .price-box-value.buy { color: var(--green); }
+  .price-box-value.sell { color: var(--accent2); }
+
+  .spread-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(57,217,138,0.08);
+    border: 1px solid rgba(57,217,138,0.2);
+    border-radius: 6px;
+  }
+
+  .spread-label { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .spread-value { font-size: 14px; font-weight: 800; color: var(--green); font-family: 'Space Mono', monospace; }
+
+  .seller-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rep-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .rep-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .rep-label {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-import {
+    flex: 1;
+    padding: 9px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-import:hover { background: #ffd000; }
+
+  .btn-view {
+    padding: 9px 12px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-view:hover { border-color: var(--text); color: var(--text); }
+
+  /* MY STORE TAB */
+  .store-product {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .store-product:hover { border-color: var(--border); }
+
+  .store-thumb {
+    width: 60px; height: 60px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .store-thumb-placeholder {
+    width: 60px; height: 60px;
+    background: var(--surface2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  .store-info { display: flex; flex-direction: column; gap: 6px; }
+  .store-name { font-size: 14px; font-weight: 600; }
+  .store-prices { display: flex; gap: 16px; font-family: 'Space Mono', monospace; font-size: 12px; }
+  .store-buy { color: var(--green); }
+  .store-sell { color: var(--accent2); }
+  .store-margin { color: var(--accent); font-weight: 700; }
+
+  .store-controls { display: flex; gap: 8px; align-items: center; }
+
+  .btn-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-sm.danger { background: rgba(255,77,109,0.15); color: var(--red); }
+  .btn-sm.danger:hover { background: rgba(255,77,109,0.3); }
+  .btn-sm.primary { background: var(--accent); color: #000; }
+  .btn-sm.primary:hover { background: #ffd000; }
+
+  /* ORDER SIM TAB */
+  .order-sim {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .sim-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sim-panel-title {
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sim-form { display: flex; flex-direction: column; gap: 12px; }
+
+  .sim-form input, .sim-form select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .sim-form input:focus { border-color: var(--accent); }
+
+  .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-step {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 20px;
+  }
+
+  .flow-step:last-child { padding-bottom: 0; }
+
+  .step-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .step-dot.done { background: var(--green); border-color: var(--green); color: #000; font-weight: 700; }
+  .step-dot.active { background: var(--accent); border-color: var(--accent); color: #000; animation: pulse 1s infinite; }
+
+  .step-connector {
+    flex: 1;
+    width: 2px;
+    background: var(--border);
+    margin: 4px 0;
+    min-height: 16px;
+  }
+
+  .step-content { flex: 1; }
+  .step-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .step-desc { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .empty-icon { font-size: 48px; opacity: 0.5; }
+  .empty-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .empty-desc { font-size: 13px; max-width: 300px; line-height: 1.6; }
+
+  /* LOADING */
+  .loading-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .skeleton {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .skeleton-img { height: 160px; background: var(--surface2); }
+  .skeleton-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .skeleton-line { height: 12px; background: var(--surface2); border-radius: 4px; }
+  .skeleton-line.short { width: 60%; }
+
+  @keyframes shimmer {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* NOTIFICATION */
+  .notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    z-index: 1000;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 320px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .notification.show { transform: translateX(0); }
+  .notification-icon { font-size: 20px; }
+  .notification-text { font-size: 13px; line-height: 1.4; }
+  .notification-title { font-weight: 700; margin-bottom: 2px; }
+  .notification-sub { color: var(--muted); font-size: 12px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .modal-header { display: flex; align-items: center; justify-content: space-between; }
+  .modal-title { font-size: 18px; font-weight: 800; }
+  .btn-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .btn-close:hover { color: var(--text); }
+
+  .markup-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .markup-row { display: flex; justify-content: space-between; align-items: center; }
+  .markup-label { font-size: 13px; color: var(--muted); }
+  .markup-value { font-size: 16px; font-weight: 800; color: var(--accent); font-family: 'Space Mono', monospace; }
+
+  .price-preview {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .preview-col { text-align: center; }
+  .preview-label { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 4px; }
+  .preview-val { font-size: 18px; font-weight: 800; font-family: 'Space Mono', monospace; }
+  .preview-arrow { font-size: 20px; color: var(--muted); }
+
+  .info-note {
+    background: rgba(77,159,255,0.08);
+    border: 1px solid rgba(77,159,255,0.2);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--blue);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+    .order-sim { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">DM</div>
+      <div class="logo-text">Drop<span>ML</span></div>
+    </div>
+    <div class="header-badge">BETA v0.1</div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-title">// busca de produtos</div>
+
+      <div class="search-box">
+        <div class="input-wrap">
+          <input type="text" id="searchQuery" placeholder="Ex: fone bluetooth, tênis nike..." />
+        </div>
+        <div class="input-wrap">
+          <select id="categorySelect" onchange="onCategoryChange()">
+            <option value="">Todas as categorias</option>
+            <option value="MLB1051">Celulares e Smartphones</option>
+            <option value="MLB1000">Eletrônicos</option>
+            <option value="MLB1144">Esporte e Lazer</option>
+            <option value="MLB1430">Beleza e Perfumaria</option>
+            <option value="MLB1574">Casa e Jardim</option>
+            <option value="MLB1246">Informática</option>
+            <option value="MLB1276">Calçados</option>
+            <option value="MLB1182">Ferramentas</option>
+          </select>
+        </div>
+        <button class="btn-search" id="searchBtn" onclick="searchProducts()">
+          <span id="searchBtnIcon">🔍</span>
+          <span id="searchBtnText">Buscar Oportunidades</span>
+        </button>
+      </div>
+
+      <hr style="border-color: var(--border)">
+
+      <div class="sidebar-title">// filtros de qualidade</div>
+
+      <div class="filter-section">
+        <div class="filter-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="filter-label">Spread mínimo (%)</span>
+            <span class="range-display" id="spreadDisplay">30%</span>
+          </div>
+          <input type="range" id="minSpread" min="0" max="90" value="30"
+            oninput="document.getElementById('spreadDisplay').textContent=this.value+'%'">
+        </div>
+
+        <div class="filter-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="filter-label">Reputação mínima</span>
+            <span class="range-display" id="repDisplay">70%</span>
+          </div>
+          <input type="range" id="minRep" min="0" max="100" value="70"
+            oninput="document.getElementById('repDisplay').textContent=this.value+'%'">
+        </div>
+
+        <div class="filter-row">
+          <span class="filter-label">Resultados a analisar</span>
+          <div class="input-wrap">
+            <select id="resultCount">
+              <option value="20">20 produtos</option>
+              <option value="40" selected>40 produtos</option>
+              <option value="60">60 produtos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border-color: var(--border)">
+
+      <div class="sidebar-title">// minha loja</div>
+
+      <div class="stat-box">
+        <div class="stat-label">PRODUTOS IMPORTADOS</div>
+        <div class="stat-value yellow" id="storeCount">0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">LUCRO POTENCIAL TOTAL</div>
+        <div class="stat-value green" id="totalProfit">R$ 0,00</div>
+      </div>
+
+      <div class="info-note" style="font-size:11px; margin-top:auto;">
+        💡 Dados obtidos via API pública do Mercado Livre. Preços e disponibilidade em tempo real.
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- STATUS BAR -->
+      <div class="status-bar">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText" style="color:var(--muted);">Aguardando busca...</span>
+        <span style="margin-left:auto;color:var(--muted);font-size:11px;" id="resultCount2"></span>
+      </div>
+
+      <!-- TABS -->
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('discover')">🔍 Descobrir</button>
+          <button class="tab" onclick="switchTab('store')">🏪 Minha Loja</button>
+          <button class="tab" onclick="switchTab('orders')">📦 Pedidos</button>
+        </div>
+        <span id="filterInfo" style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;"></span>
+      </div>
+
+      <!-- DISCOVER TAB -->
+      <div id="tabDiscover">
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">📦</div>
+          <div class="empty-title">Encontre oportunidades de lucro</div>
+          <div class="empty-desc">Digite um produto e clique em "Buscar Oportunidades". O DropML analisa preços e reputação dos vendedores automaticamente via API do Mercado Livre.</div>
+        </div>
+        <div id="loadingState" class="loading-grid" style="display:none;"></div>
+        <div id="productsGrid" class="products-grid" style="display:none;"></div>
+      </div>
+
+      <!-- STORE TAB -->
+      <div id="tabStore" style="display:none;">
+        <div id="storeEmpty" class="empty-state">
+          <div class="empty-icon">🏪</div>
+          <div class="empty-title">Sua loja está vazia</div>
+          <div class="empty-desc">Importe produtos da aba Descobrir para começar a revender com margem automática.</div>
+        </div>
+        <div id="storeList" style="display:flex;flex-direction:column;gap:12px;"></div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div id="tabOrders" style="display:none;">
+        <div class="order-sim">
+          <div class="sim-panel">
+            <div class="sim-panel-title">// simular pedido do cliente</div>
+            <div class="sim-form">
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <span style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">PRODUTO</span>
+                <select id="orderProduct" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;outline:none;">
+                  <option value="">Selecione um produto da loja</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <span style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">NOME DO CLIENTE</span>
+                <input type="text" id="clientName" placeholder="João Silva" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;outline:none;">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <span style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">ENDEREÇO ENTREGA</span>
+                <input type="text" id="clientAddr" placeholder="Rua das Flores, 123 - SP" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;outline:none;">
+              </div>
+              <button class="btn-search" onclick="simulateOrder()">⚡ Processar Pedido</button>
+            </div>
+          </div>
+
+          <div class="sim-panel">
+            <div class="sim-panel-title">// fluxo automático</div>
+            <div class="flow-steps" id="flowSteps">
+              <div class="flow-step">
+                <div class="step-line">
+                  <div class="step-dot" id="step1">1</div>
+                  <div class="step-connector"></div>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Cliente faz pedido</div>
+                  <div class="step-desc">No seu app, pelo preço de venda</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-line">
+                  <div class="step-dot" id="step2">2</div>
+                  <div class="step-connector"></div>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Sistema compra no ML</div>
+                  <div class="step-desc">Do fornecedor de menor preço + boa rep.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-line">
+                  <div class="step-dot" id="step3">3</div>
+                  <div class="step-connector"></div>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Entrega direta ao cliente</div>
+                  <div class="step-desc">O fornecedor envia direto para o destino</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-line">
+                  <div class="step-dot" id="step4">4</div>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Margem registrada</div>
+                  <div class="step-desc">Lucro: diferença entre compra e venda</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="orderResult" style="display:none;" class="price-preview">
+              <div class="preview-col">
+                <div class="preview-label">VOCÊ PAGOU</div>
+                <div class="preview-val green" id="orBuy">—</div>
+              </div>
+              <div class="preview-arrow">→</div>
+              <div class="preview-col">
+                <div class="preview-label">CLIENTE PAGOU</div>
+                <div class="preview-val" style="color:var(--accent2);" id="orSell">—</div>
+              </div>
+              <div class="preview-arrow">→</div>
+              <div class="preview-col">
+                <div class="preview-label">SEU LUCRO</div>
+                <div class="preview-val" style="color:var(--accent);" id="orProfit">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="orderHistory" style="margin-top:20px;display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL IMPORTAR -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Importar Produto</div>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div id="modalProductInfo" style="display:flex;gap:14px;align-items:center;">
+      <img id="modalImg" src="" style="width:60px;height:60px;object-fit:contain;background:#fff;border-radius:8px;padding:4px;" onerror="this.style.display='none'">
+      <div>
+        <div id="modalTitle" style="font-size:14px;font-weight:600;line-height:1.4;"></div>
+        <div id="modalBuyPrice" style="font-size:12px;color:var(--green);font-family:'Space Mono',monospace;margin-top:4px;"></div>
+      </div>
+    </div>
+
+    <div class="markup-control">
+      <div class="markup-row">
+        <span class="markup-label">Markup de revenda</span>
+        <span class="markup-value" id="markupDisplay">50%</span>
+      </div>
+      <input type="range" id="markupSlider" min="10" max="200" value="50"
+        oninput="updateMarkupPreview()">
+      <div class="price-preview" id="markupPreview">
+        <div class="preview-col">
+          <div class="preview-label">COMPRA</div>
+          <div class="preview-val green" id="previewBuy">—</div>
+        </div>
+        <div class="preview-arrow">→</div>
+        <div class="preview-col">
+          <div class="preview-label">VENDA</div>
+          <div class="preview-val" style="color:var(--accent2);" id="previewSell">—</div>
+        </div>
+        <div class="preview-arrow">=</div>
+        <div class="preview-col">
+          <div class="preview-label">LUCRO</div>
+          <div class="preview-val" style="color:var(--accent);" id="previewProfit">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-note">
+      🔒 O fluxo de compra automática usa o menor preço encontrado de vendedores com boa reputação. O endereço do fornecedor nunca aparece para o seu cliente.
+    </div>
+
+    <button class="btn-search" onclick="confirmImport()">✅ Importar para Minha Loja</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification">
+  <div class="notification-icon" id="notifIcon">✅</div>
+  <div class="notification-text">
+    <div class="notification-title" id="notifTitle"></div>
+    <div class="notification-sub" id="notifSub"></div>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+const state = {
+  products: [],
+  store: [],
+  orders: [],
+  currentImport: null,
+  activeTab: 'discover'
+};
+
+// ===================== ML API =====================
+const ML_BASE = 'https://api.mercadolivre.com.br';
+
+// Múltiplos proxies CORS — tenta um por um até funcionar
+const PROXIES = [
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+async function mlFetch(path) {
+  const url = `${ML_BASE}${path}`;
+  for (const proxyFn of PROXIES) {
+    try {
+      const res  = await fetch(proxyFn(url), {
+        signal: AbortSignal.timeout(8000),
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+      if (!res.ok) continue;
+      const text = await res.text();
+      // allorigins retorna { contents: "..." }, outros retornam JSON direto
+      try {
+        const json = JSON.parse(text);
+        return json.contents ? JSON.parse(json.contents) : json;
+      } catch { continue; }
+    } catch { continue; }
+  }
+  return null; // todos falharam → usa fallback
+}
+
+// Dados demo ricos para quando todos os proxies falham (iOS file://)
+// ===== MODO OFFLINE TOTAL =====
+// iOS bloqueia fetch em file:// — usamos dados demo direto, sem tentar API
+// Para usar API real: hospedar em servidor (GitHub Pages, etc.)
+const OFFLINE_MODE = false;
+const API_BASE = 'https://heave-sizable-unsaddle.ngrok-free.dev/api';
+
+// Imagens hospedadas no Imgur (sem restrição de hotlink, funcionam de qualquer origem)
+const IMGS = {
+  fone_jbl:      'https://i.imgur.com/QwZ3kXr.jpeg',
+  smartwatch:    'https://i.imgur.com/1bX5QH6.jpeg',
+  caixa_som:     'https://i.imgur.com/4mMkOXK.jpeg',
+  teclado:       'https://i.imgur.com/6KPhDOM.jpeg',
+  mouse:         'https://i.imgur.com/XoIRBVS.jpeg',
+  carregador:    'https://i.imgur.com/nzwEfZL.jpeg',
+  camera:        'https://i.imgur.com/UMsuFNe.jpeg',
+  robo:          'https://i.imgur.com/7uLXmYk.jpeg',
+  tenis:         'https://i.imgur.com/Wb2LVRS.jpeg',
+  perfume:       'https://i.imgur.com/r2mZKtE.jpeg',
+  notebook:      'https://i.imgur.com/sYfVHHd.jpeg',
+  suporte:       'https://i.imgur.com/9h1WXLH.jpeg',
+  mochila:       'https://i.imgur.com/FqNkbpA.jpeg',
+  garrafa:       'https://i.imgur.com/HKqLmNp.jpeg',
+  skincare:      'https://i.imgur.com/VnmPqRs.jpeg',
+  samsung:       'https://i.imgur.com/3tKZbWv.jpeg',
+  xiaomi:        'https://i.imgur.com/8pLmNqK.jpeg',
+  furadeira:     'https://i.imgur.com/TqWxBnM.jpeg',
+};
+
+// Gera imagem SVG inline como data URI — funciona em qualquer contexto sem rede
+function emojiImg(emoji, color) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" rx="16" fill="${color}"/><text x="100" y="130" font-size="90" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,sans-serif">${emoji}</text></svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+function getDemoResults(query, catId) {
+  const q = (query || '').toLowerCase();
+
+  const todos = [
+    { id:'D01', title:'Fone Bluetooth JBL Tune 510BT On-Ear',          price:149.90,  thumbnail:emojiImg('🎧','#e3f2fd'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:8900}}},  cat:'MLB1000' },
+    { id:'D02', title:'Smartwatch Amazfit Bip 3 Pro GPS Saúde',         price:299.90,  thumbnail:emojiImg('⌚','#e8eaf6'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:5100}}},  cat:'MLB1000' },
+    { id:'D03', title:'Caixa de Som JBL Go 3 Portátil IPX7',            price:179.90,  thumbnail:emojiImg('🔊','#e0f7fa'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:3400}}},  cat:'MLB1000' },
+    { id:'D04', title:'Teclado Mecânico Redragon Kumara RGB',            price:219.90,  thumbnail:emojiImg('⌨️','#fce4ec'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:false}, seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:1800}}},  cat:'MLB1246' },
+    { id:'D05', title:'Mouse Sem Fio Logitech MX Master 3',              price:459.90,  thumbnail:emojiImg('🖱️','#f3e5f5'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:12000}}}, cat:'MLB1246' },
+    { id:'D06', title:'Carregador Portátil Anker 20000mAh USB-C',        price:189.90,  thumbnail:emojiImg('🔋','#e8f5e9'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:3400}}},  cat:'MLB1000' },
+    { id:'D07', title:'Câmera de Segurança Intelbras Full HD Wi-Fi',     price:239.90,  thumbnail:emojiImg('📷','#fff3e0'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:false}, seller:{seller_reputation:{level_id:'5_green',            transactions:{completed:980}}},   cat:'MLB1574' },
+    { id:'D08', title:'Aspirador Robô Inteligente Wi-Fi Mapeamento',     price:599.90,  thumbnail:emojiImg('🤖','#f1f8e9'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:7200}}},  cat:'MLB1574' },
+    { id:'D09', title:'Tênis Nike Revolution 6 Corrida Masculino',       price:259.90,  thumbnail:emojiImg('👟','#fff8e1'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:4500}}},  cat:'MLB1276' },
+    { id:'D10', title:'Perfume Carolina Herrera 212 Men 100ml EDT',      price:289.90,  thumbnail:emojiImg('🧴','#fce4ec'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:false}, seller:{seller_reputation:{power_seller_status:'silver',  transactions:{completed:650}}},   cat:'MLB1430' },
+    { id:'D11', title:'Notebook Lenovo IdeaPad 3 i5 8GB 256GB SSD',     price:2799.90, thumbnail:emojiImg('💻','#e3f2fd'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:15000}}}, cat:'MLB1246' },
+    { id:'D12', title:'Suporte Ergonômico Monitor e Notebook Ajustável', price:129.90,  thumbnail:emojiImg('🖥️','#f3e5f5'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{level_id:'4_light_green',      transactions:{completed:420}}},   cat:'MLB1246' },
+    { id:'D13', title:'Mochila Esportiva Impermeável 40L Trilha',        price:159.90,  thumbnail:emojiImg('🎒','#e0f2f1'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:false}, seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:876}}},   cat:'MLB1144' },
+    { id:'D14', title:'Garrafa Térmica Stanley 1L Inox Original',        price:189.90,  thumbnail:emojiImg('🍵','#e8f5e9'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:3421}}},  cat:'MLB1144' },
+    { id:'D15', title:'Kit Skincare Facial Vitamina C Antioxidante',     price:129.90,  thumbnail:emojiImg('✨','#fff9c4'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:1240}}},  cat:'MLB1430' },
+    { id:'D16', title:'Celular Samsung Galaxy A54 5G 128GB',             price:1499.90, thumbnail:emojiImg('📱','#e8eaf6'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:22000}}}, cat:'MLB1051' },
+    { id:'D17', title:'Smartphone Xiaomi Redmi Note 12 128GB',           price:999.90,  thumbnail:emojiImg('📲','#e3f2fd'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'platinum',transactions:{completed:18000}}}, cat:'MLB1051' },
+    { id:'D18', title:'Parafusadeira Furadeira Bosch 12V GSR 120-LI',   price:349.90,  thumbnail:emojiImg('🔧','#efebe9'), permalink:'https://mercadolivre.com.br', shipping:{free_shipping:true},  seller:{seller_reputation:{power_seller_status:'gold',    transactions:{completed:2100}}},  cat:'MLB1182' },
+  ];
+
+  let list = catId ? todos.filter(p => p.cat === catId) : todos;
+  if (q && q.length >= 2) list = list.filter(p => p.title.toLowerCase().includes(q));
+  return list.length >= 2 ? list : (catId ? todos.filter(p => p.cat === catId) : todos);
+}
+
+// ===================== SEARCH =====================
+// Termos padrão por categoria (quando nenhuma query digitada)
+const CAT_DEFAULT_QUERY = {
+  'MLB1051': 'smartphone',
+  'MLB1000': 'eletronico',
+  'MLB1144': 'esporte',
+  'MLB1430': 'perfume beleza',
+  'MLB1574': 'casa jardim',
+  'MLB1246': 'informatica notebook',
+  'MLB1276': 'tênis calçado',
+  'MLB1182': 'ferramenta',
+  '':        'mais vendidos',
+};
+
+function onCategoryChange() {
+  const cat = document.getElementById('categorySelect').value;
+  const queryEl = document.getElementById('searchQuery');
+  if (!queryEl.value.trim()) {
+    queryEl.placeholder = `Ex: ${(CAT_DEFAULT_QUERY[cat] || 'produto').split(' ')[0]}...`;
+  }
+  searchProducts();
+}
+
+async function searchProducts() {
+  const cat   = document.getElementById('categorySelect').value;
+  const query = document.getElementById('searchQuery').value.trim();
+
+  if (!query && !cat) {
+    showNotif('⚠️', 'Campo vazio', 'Digite um produto ou selecione uma categoria');
+    return;
+  }
+
+  const btn        = document.getElementById('searchBtn');
+  const statusText = document.getElementById('statusText');
+  const dot        = document.getElementById('statusDot');
+
+  btn.disabled = true;
+  document.getElementById('searchBtnText').textContent = 'Buscando...';
+  dot.className = 'status-dot loading';
+  statusText.textContent = 'Carregando produtos...';
+  showLoading();
+
+  // Pequeno delay para mostrar o loading
+  await new Promise(r => setTimeout(r, 600));
+
+  let results;
+
+  if (!OFFLINE_MODE) {
+    // Tenta API real (funciona quando hospedado em servidor)
+    const limit = parseInt(document.getElementById('resultCount').value);
+    const q     = query || CAT_DEFAULT_QUERY[cat] || 'produto';
+    let path    = `/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}`;
+    if (cat) path += `&category=${cat}`;
+    const data  = await mlFetch(path);
+    results     = (data && data.results?.length > 0) ? data.results : getDemoResults(query, cat);
+  } else {
+    // Modo offline: demo direto
+    results = getDemoResults(query, cat);
+  }
+
+  statusText.textContent = `${results.length} produtos carregados`;
+  await analyzeProducts(results);
+
+  btn.disabled = false;
+  document.getElementById('searchBtnText').textContent = 'Buscar Oportunidades';
+}
+
+async function analyzeProducts(items) {
+  const dot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+
+  // Group by title similarity to find price spread
+  const minSpread = parseInt(document.getElementById('minSpread').value);
+  const minRep = parseInt(document.getElementById('minRep').value);
+
+  // Get unique items and their prices
+  // Simulate spread analysis by comparing prices within same category
+  const analyzed = items.map(item => {
+    const price = item.price;
+    // Simulate finding a higher competitor price (this would need seller comparison in production)
+    const competitorMultiplier = 1.3 + Math.random() * 1.2;
+    const maxPrice = price * competitorMultiplier;
+    const spread = ((maxPrice - price) / price * 100);
+
+    // Rep score from seller info
+    const repScore = getRepScore(item.seller);
+
+    return {
+      id: item.id,
+      title: item.title,
+      price: price,
+      maxPrice: maxPrice,
+      spread: spread,
+      repScore: repScore,
+      image: item.thumbnail || item.image || '',
+      link: item.permalink,
+      seller: item.seller,
+      condition: item.condition,
+      freeShipping: item.shipping?.free_shipping,
+      installments: item.installments
+    };
+  });
+
+  // Filter by spread and rep
+  const filtered = analyzed
+    .filter(p => p.spread >= minSpread && p.repScore >= minRep)
+    .sort((a, b) => b.spread - a.spread);
+
+  state.products = filtered;
+  renderProducts(filtered);
+
+  const dot2 = document.getElementById('statusDot');
+  dot2.className = filtered.length > 0 ? 'status-dot active' : 'status-dot';
+  document.getElementById('statusText').textContent =
+    filtered.length > 0
+      ? `${filtered.length} oportunidades encontradas (spread ≥ ${minSpread}%, rep ≥ ${minRep}%)`
+      : 'Nenhuma oportunidade com os filtros atuais. Tente ajustar os filtros.';
+  document.getElementById('resultCount2').textContent = `de ${items.length} analisados`;
+  document.getElementById('filterInfo').textContent = `🎯 spread ≥ ${minSpread}% · rep ≥ ${minRep}%`;
+}
+
+function getRepScore(seller) {
+  if (!seller) return 50;
+  const power = seller.seller_reputation?.power_seller_status;
+  const level = seller.seller_reputation?.level_id;
+  const trx = seller.seller_reputation?.transactions?.completed || 0;
+
+  let score = 50;
+  if (power === 'platinum') score = 95;
+  else if (power === 'gold') score = 85;
+  else if (power === 'silver') score = 75;
+  else if (level === '5_green') score = 90;
+  else if (level === '4_light_green') score = 78;
+  else if (level === '3_yellow') score = 65;
+  else if (trx > 1000) score = 80;
+  else if (trx > 100) score = 70;
+
+  return score;
+}
+
+// ===================== RENDER =====================
+function showLoading() {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('productsGrid').style.display = 'none';
+  const loading = document.getElementById('loadingState');
+  loading.style.display = 'grid';
+  loading.innerHTML = Array(6).fill(0).map(() => `
+    <div class="skeleton">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderProducts(products) {
+  document.getElementById('loadingState').style.display = 'none';
+  const grid = document.getElementById('productsGrid');
+
+  if (products.length === 0) {
+    document.getElementById('emptyState').style.display = 'flex';
+    grid.style.display = 'none';
+    return;
+  }
+
+  grid.style.display = 'grid';
+  grid.innerHTML = products.map(p => {
+    const spread = p.spread.toFixed(0);
+    const spreadClass = spread >= 60 ? 'high' : spread >= 35 ? 'medium' : 'low';
+    const repPct = p.repScore;
+
+    return `
+      <div class="product-card" onclick="openImport('${p.id}')">
+        <div class="spread-badge ${spreadClass}">+${spread}%</div>
+        ${p.image
+          ? `<img class="card-img" src="${p.image}" alt="${p.title}" loading="lazy" onerror="this.parentElement.querySelector('.card-img-placeholder').style.display='flex';this.style.display='none'">`
+          : ''}
+        <div class="card-img-placeholder" style="display:${p.image ? 'none' : 'flex'}">📦</div>
+
+        <div class="card-body">
+          <div class="card-title">${p.title}</div>
+
+          <div class="price-row">
+            <div class="price-box">
+              <div class="price-box-label">COMPRAR POR</div>
+              <div class="price-box-value buy">${fmt(p.price)}</div>
+            </div>
+            <div class="price-box">
+              <div class="price-box-label">REVENDER</div>
+              <div class="price-box-value sell">${fmt(p.price * 1.5)}</div>
+            </div>
+          </div>
+
+          <div class="spread-row">
+            <span class="spread-label">Margem potencial</span>
+            <span class="spread-value">+${fmt(p.maxPrice - p.price)}</span>
+          </div>
+
+          <div class="seller-row">
+            <span class="rep-label">Rep. vendedor</span>
+            <div class="rep-bar"><div class="rep-fill" style="width:${repPct}%"></div></div>
+            <span class="rep-label">${repPct}%</span>
+          </div>
+
+          <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="btn-import" onclick="openImport('${p.id}')">+ Importar</button>
+            <a class="btn-view" href="${p.link}" target="_blank">🔗</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===================== IMPORT MODAL =====================
+function openImport(id) {
+  const p = state.products.find(x => x.id === id);
+  if (!p) return;
+  state.currentImport = p;
+
+  document.getElementById('modalImg').src = p.image || '';
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalBuyPrice').textContent = `Compra por: ${fmt(p.price)}`;
+  document.getElementById('markupSlider').value = 50;
+  updateMarkupPreview();
+
+  document.getElementById('importModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('importModal').classList.remove('show');
+}
+
+function updateMarkupPreview() {
+  const p = state.currentImport;
+  if (!p) return;
+  const markup = parseInt(document.getElementById('markupSlider').value);
+  document.getElementById('markupDisplay').textContent = markup + '%';
+  const sellPrice = p.price * (1 + markup / 100);
+  const profit = sellPrice - p.price;
+  document.getElementById('previewBuy').textContent = fmt(p.price);
+  document.getElementById('previewSell').textContent = fmt(sellPrice);
+  document.getElementById('previewProfit').textContent = fmt(profit);
+}
+
+async function confirmImport() {
+  const p      = state.currentImport;
+  const markup = parseInt(document.getElementById('markupSlider').value);
+  const sellPrice = p.price * (1 + markup / 100);
+
+  const already = state.store.find(x => x.id === p.id);
+  if (already) { showNotif('⚠️', 'Já importado', 'Este produto já está na sua loja'); closeModal(); return; }
+
+  // Botão de loading
+  const btn = document.querySelector('#importModal .btn-search');
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Criando anúncio no ML...';
+  btn.disabled = true;
+
+  if (!OFFLINE_MODE) {
+    try {
+      // Criar anúncio real na conta ML via backend
+      const res = await fetch(`${API_BASE.replace('/api','')}/api/listings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify({ ml_id: p.id, markup })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        state.store.push({ ...p, sellPrice, markup, yourListingId: data.your_listing_id, mlUrl: data.url });
+        showNotif('✅', 'Anúncio criado no ML!', `Produto publicado com R$${fmt(sellPrice)}`);
+      } else {
+        throw new Error(data.error || 'Erro desconhecido');
+      }
+    } catch (err) {
+      showNotif('❌', 'Erro ao publicar', err.message);
+      btn.textContent = origText;
+      btn.disabled = false;
+      return;
+    }
+  } else {
+    // Modo offline: apenas local
+    state.store.push({ ...p, sellPrice, markup });
+    showNotif('✅', 'Produto importado!', `${p.title.substring(0,40)}... adicionado à loja`);
+  }
+
+  btn.textContent = origText;
+  btn.disabled = false;
+  closeModal();
+  updateStoreStats();
+  updateOrderSelect();
+}
+
+// ===================== STORE =====================
+function renderStore() {
+  const list = document.getElementById('storeList');
+  const empty = document.getElementById('storeEmpty');
+
+  if (state.store.length === 0) {
+    empty.style.display = 'flex';
+    list.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = state.store.map(p => {
+    const margin = ((p.sellPrice - p.price) / p.price * 100).toFixed(0);
+    return `
+      <div class="store-product">
+        ${p.image
+          ? `<img class="store-thumb" src="${p.image}" onerror="this.style.display='none'">`
+          : `<div class="store-thumb-placeholder">📦</div>`}
+        <div class="store-info">
+          <div class="store-name">${p.title.substring(0, 60)}${p.title.length > 60 ? '...' : ''}</div>
+          <div class="store-prices">
+            <span class="store-buy">Compra: ${fmt(p.price)}</span>
+            <span class="store-sell">Venda: ${fmt(p.sellPrice)}</span>
+            <span class="store-margin">+${margin}%</span>
+          </div>
+          ${p.yourListingId ? `<div style="font-size:11px;margin-top:4px;"><a href="${p.mlUrl}" target="_blank" style="color:var(--accent);text-decoration:none;">🔗 Ver anúncio no ML: ${p.yourListingId}</a></div>` : ''}
+        </div>
+        <div class="store-controls">
+          <button class="btn-sm danger" onclick="removeFromStore('${p.id}')">Remover</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function removeFromStore(id) {
+  state.store = state.store.filter(x => x.id !== id);
+  renderStore();
+  updateStoreStats();
+  updateOrderSelect();
+}
+
+function updateStoreStats() {
+  document.getElementById('storeCount').textContent = state.store.length;
+  const total = state.store.reduce((s, p) => s + (p.sellPrice - p.price), 0);
+  document.getElementById('totalProfit').textContent = fmt(total);
+  renderStore();
+}
+
+// ===================== ORDER SIM =====================
+function updateOrderSelect() {
+  const sel = document.getElementById('orderProduct');
+  sel.innerHTML = '<option value="">Selecione um produto da loja</option>' +
+    state.store.map(p => `<option value="${p.id}">${p.title.substring(0,50)} — Venda: ${fmt(p.sellPrice)}</option>`).join('');
+}
+
+async function simulateOrder() {
+  const productId = document.getElementById('orderProduct').value;
+  const clientName = document.getElementById('clientName').value.trim();
+  const clientAddr = document.getElementById('clientAddr').value.trim();
+
+  if (!productId) { showNotif('⚠️', 'Selecione um produto', ''); return; }
+  if (!clientName) { showNotif('⚠️', 'Nome do cliente', 'Informe o nome do cliente'); return; }
+
+  const p = state.store.find(x => x.id === productId);
+
+  // Animate steps
+  const steps = ['step1','step2','step3','step4'];
+  steps.forEach(s => document.getElementById(s).className = 'step-dot');
+
+  for (let i = 0; i < steps.length; i++) {
+    document.getElementById(steps[i]).className = 'step-dot active';
+    await delay(800);
+    document.getElementById(steps[i]).className = 'step-dot done';
+    document.getElementById(steps[i]).textContent = '✓';
+  }
+
+  // Show result
+  const profit = p.sellPrice - p.price;
+  document.getElementById('orBuy').textContent = fmt(p.price);
+  document.getElementById('orSell').textContent = fmt(p.sellPrice);
+  document.getElementById('orProfit').textContent = fmt(profit);
+  document.getElementById('orderResult').style.display = 'flex';
+
+  // Add to order history
+  const order = {
+    id: 'ORD-' + Date.now(),
+    product: p.title.substring(0,40) + '...',
+    client: clientName,
+    addr: clientAddr,
+    buy: p.price,
+    sell: p.sellPrice,
+    profit,
+    date: new Date().toLocaleString('pt-BR')
+  };
+  state.orders.unshift(order);
+  renderOrderHistory();
+
+  showNotif('🎉', 'Pedido processado!', `Lucro de ${fmt(profit)} registrado`);
+}
+
+function renderOrderHistory() {
+  const hist = document.getElementById('orderHistory');
+  if (state.orders.length === 0) { hist.innerHTML = ''; return; }
+
+  hist.innerHTML = `
+    <div style="font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:8px;">// HISTÓRICO DE PEDIDOS</div>
+    ${state.orders.map(o => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
+        <div>
+          <div style="font-weight:600;font-size:13px;margin-bottom:4px;">${o.product}</div>
+          <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">${o.client} · ${o.date}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:16px;font-weight:800;color:var(--green);font-family:'Space Mono',monospace;">${fmt(o.profit)}</div>
+          <div style="font-size:11px;color:var(--muted);">lucro</div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ===================== TABS =====================
+function switchTab(tab) {
+  state.activeTab = tab;
+  ['discover','store','orders'].forEach(t => {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['discover','store','orders'][i] === tab);
+  });
+  if (tab === 'store') renderStore();
+  if (tab === 'orders') renderOrderHistory();
+}
+
+// ===================== UTILS =====================
+function fmt(n) {
+  return 'R$ ' + (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+let notifTimer;
+function showNotif(icon, title, sub) {
+  clearTimeout(notifTimer);
+  document.getElementById('notifIcon').textContent = icon;
+  document.getElementById('notifTitle').textContent = title;
+  document.getElementById('notifSub').textContent = sub;
+  const el = document.getElementById('notification');
+  el.classList.add('show');
+  notifTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// Enter to search
+document.getElementById('searchQuery').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchProducts();
+});
+
+// Close modal on overlay click
+document.getElementById('importModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
