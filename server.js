@@ -250,8 +250,8 @@ try {
 let url = `${ML.BASE}/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}`;
 if (category) url += `&category=${category}`;
 
-const resp = await axios.get(url.replace(ML.BASE, "https://api.mercadolibre.com"), { headers: { "Authorization": "Bearer " + await getValidToken(), "User-Agent": "Mozilla/5.0" } });
-const items = resp.data.results || [];
+const resp = await mlGet(/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}${category ? "&category=" + category : ""});
+const items = resp.results || [];
 
 const analyzed = items.map(item => {
   const competitorMultiplier = 1.3 + Math.random() * 1.2;
