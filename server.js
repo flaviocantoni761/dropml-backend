@@ -250,7 +250,7 @@ try {
 let url = `${ML.BASE}/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}`;
 if (category) url += `&category=${category}`;
 
-const resp = await axios.get(url);
+const resp = await axios.get(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; DropML/1.0)" } });
 const items = resp.data.results || [];
 
 const analyzed = items.map(item => {
