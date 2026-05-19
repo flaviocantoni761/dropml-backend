@@ -1412,6 +1412,7 @@ async function confirmImport() {
   const markup = parseInt(document.getElementById('markupSlider').value);
   const sellPrice = p.price * (1 + markup / 100);
 
+  if (p.id && p.id.startsWith('D')) { showNotif('⚠️', 'Produto demo', 'Busca offline ativa. Tente novamente em alguns segundos.'); return; }
   const already = state.store.find(x => x.id === p.id);
   if (already) { showNotif('⚠️', 'Já importado', 'Este produto já está na sua loja'); closeModal(); return; }
 
