@@ -1210,13 +1210,12 @@ async function searchProducts() {
     // Tenta API real (funciona quando hospedado em servidor)
     const limit = parseInt(document.getElementById('resultCount').value);
     const q     = query || CAT_DEFAULT_QUERY[cat] || 'produto';
-    try {
-      const res = await fetch(API_BASE + "/search?q=" + encodeURIComponent(q) + (cat ? "&category=" + cat : "") + "&limit=" + limit);
-      const data = await res.json();
-      results = (data && data.items && data.items.length > 0) ? data.items.map(function(item) { return {id:item.id,title:item.title,price:item.price,thumbnail:item.image||emojiImg('📦','#e3f2fd'),permalink:item.link,shipping:{free_shipping:item.freeShipping},seller:{seller_reputation:{power_seller_status:item.seller&&item.seller.power,transactions:{completed:(item.seller&&item.seller.transactions)||0}}}}; }) : getDemoResults(query, cat);
-    } catch(e) { results = getDemoResults(query, cat); }
+    const q2 = q || CAT_DEFAULT_QUERY[cat] || "produto";
+    let mlpath = "/sites/MLB/search?q=" + encodeURIComponent(q2) + "&limit=" + limit;
+    if (cat) mlpath += "&category=" + cat;
+    const data = await mlFetch(mlpath);
+    results = (data && data.results && data.results.length > 0) ? data.results : getDemoResults(query, cat);
   } else {
-    // Modo offline: demo direto
     results = getDemoResults(query, cat);
   }
 
