@@ -250,7 +250,7 @@ try {
 let url = `${ML.BASE}/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}`;
 if (category) url += `&category=${category}`;
 
-const resp = await mlGet(`/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}${category ? "&category="+category : ""}`);
+const token = await getValidToken(); const resp = await mlGet(`/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}${category ? "&category="+category : ""}&access_token=${token}`);
 const items = resp.results || [];
 
 const analyzed = items.map(item => {
