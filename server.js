@@ -969,6 +969,17 @@ res.sendStatus(200);
 });
 
 // ─── ROTAS: DASHBOARD ─────────────────────────────────────────────────────────
+
+// BUSCA PRODUTO POR ID ML
+app.get('/api/items/:ml_id', async (req, res) => {
+  try {
+    const item = await mlGet('/items/' + req.params.ml_id);
+    res.json(item);
+  } catch (err) {
+    res.status(404).json({ error: 'Produto nao encontrado', detail: err.response && err.response.data });
+  }
+});
+
 app.get('/api/dashboard', async (req, res) => {
 const [totalOrders]    = await dbAll('SELECT COUNT(*) as c FROM orders');
 const [totalRevenue]   = await dbAll(`SELECT SUM(sell_price) as s FROM orders WHERE payment_status='approved'`);

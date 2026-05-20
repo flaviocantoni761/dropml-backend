@@ -785,6 +785,17 @@
     <aside class="sidebar">
       <div class="sidebar-title">// busca de produtos</div>
 
+      <div class="search-box" style="margin-bottom:10px;">
+        <div class="sidebar-title" style="margin-bottom:8px;">// importar por ID do ML</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Cole o ID do produto (ex: MLB3456789) encontrado no Mercado Livre</div>
+        <div class="input-wrap" style="display:flex;gap:8px;">
+          <input type="text" id="mlIdInput" placeholder="MLB..." style="flex:1;" oninput="this.value=this.value.toUpperCase()" />
+          <button class="btn-search" style="width:auto;padding:0 14px;font-size:12px;" onclick="importById()">Buscar</button>
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border);margin:12px 0;">
+
       <div class="search-box">
         <div class="input-wrap">
           <input type="text" id="searchQuery" placeholder="Ex: fone bluetooth, tênis nike..." />
@@ -1182,6 +1193,7 @@ function onCategoryChange() {
   searchProducts();
 }
 
+async function importById(){const mlId=document.getElementById("mlIdInput").value.trim().toUpperCase();if(!mlId||!mlId.startsWith("MLB")){showNotif("X","ID invalido","Digite MLB...");return;}const btn=document.querySelector("[onclick=\"importById()\"]");if(btn){btn.textContent="Buscando...";btn.disabled=true;}try{const res=await fetch(API_BASE+"/items/"+mlId);if(!res.ok)throw new Error("Nao encontrado");const item=await res.json();if(!item||!item.id)throw new Error("Nao encontrado");const thumb=item.pictures&&item.pictures[0]?item.pictures[0].url:emojiImg("P","#e3f2fd");state.currentImport={id:item.id,title:item.title,price:item.price,thumbnail:thumb,permalink:item.permalink||("https://www.mercadolivre.com.br/p/"+item.id),shipping:{free_shipping:item.shipping&&item.shipping.free_shipping},seller:{seller_reputation:{power_seller_status:"gold",transactions:{completed:100}}},spread:30,repScore:80};document.getElementById("modalTitle").textContent=item.title;document.getElementById("modalImg").src=thumb;document.getElementById("modalBuyPrice").textContent="Preco: R$ "+item.price.toFixed(2).replace(".",",");document.getElementById("markupSlider").value=50;updateMarkupPreview();document.getElementById("importModal").classList.add("show");}catch(err){showNotif("X","Erro",err.message);}finally{if(btn){btn.textContent="Buscar";btn.disabled=false;}}}
 async function searchProducts() {
   const cat   = document.getElementById('categorySelect').value;
   const query = document.getElementById('searchQuery').value.trim();
