@@ -980,6 +980,7 @@ app.get('/api/items/:ml_id', async (req, res) => {
   }
 });
 
+app.get('/api/test-item', async (req, res) => { try { const data = await mlGet('/items/MLB2716816297'); res.json(data); } catch(err) { res.status(500).json({error: err.message, detail: err.response && err.response.data}); } });
 app.get('/api/dashboard', async (req, res) => {
 const [totalOrders]    = await dbAll('SELECT COUNT(*) as c FROM orders');
 const [totalRevenue]   = await dbAll(`SELECT SUM(sell_price) as s FROM orders WHERE payment_status='approved'`);
