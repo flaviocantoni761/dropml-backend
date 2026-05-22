@@ -7,6 +7,7 @@ const crypto     = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const path       = require('path');
 const nodemailer = require('nodemailer');
+const blingAuth = require('./bling-auth');
 
 const transporter = nodemailer.createTransport({
 service: 'gmail',
