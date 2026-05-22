@@ -67,6 +67,8 @@ const pool = new Pool({
 connectionString: process.env.DATABASE_URL,
 ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
+blingAuth.initBlingTable(pool);
+blingAuth.registerRoutes(app, pool);
 
 async function initDB() {
 await pool.query(`CREATE TABLE IF NOT EXISTS ml_tokens ( id            SERIAL PRIMARY KEY, access_token  TEXT NOT NULL, refresh_token TEXT NOT NULL, expires_at    BIGINT NOT NULL, user_id       TEXT, created_at    BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT )`);
