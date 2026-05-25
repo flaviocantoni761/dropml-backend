@@ -170,6 +170,17 @@ function registerRoutes(app, pool) {
 
   console.log('[Bling] Rotas registradas.');
 }
+// ── Busca de produtos no Bling ───────────────────────────────
+async function buscarProdutosBling(pool, nome = '', pagina = 1) {
+  const params = new URLSearchParams({
+    pagina: pagina,
+    limite: 20,
+  });
+  if (nome) params.append('nome', nome);
+
+  const resultado = await blingRequest(pool, 'GET', `/produtos?${params.toString()}`);
+  return resultado?.data || [];
+}
 
 module.exports = {
   initBlingTable,
@@ -177,5 +188,7 @@ module.exports = {
   getValidBlingToken,
   blingRequest,
   refreshBlingToken,
+  buscarProdutosBling,
 };
+
 
