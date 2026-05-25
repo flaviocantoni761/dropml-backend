@@ -69,7 +69,16 @@ ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : fal
 });
 blingAuth.initBlingTable(pool);
 blingAuth.registerRoutes(app, pool);
-
+app.get('/api/produtos/buscar', async (req, res) => {
+  try {
+    const { q = '', pagina = 1 } = req.query;
+    const produtos = await blingAuth.buscarProdutosBling(pool, q, pagina);
+    res.json({ sucesso: true, total: produtos.length, produtos });
+  } catch (err) {
+    console.error('[Busca] Erro:', err.message);
+    res.status(500).json({ sucesso: false, erro: err.message });
+  }
+});
 async function initDB() {
 await pool.query(`CREATE TABLE IF NOT EXISTS ml_tokens ( id            SERIAL PRIMARY KEY, access_token  TEXT NOT NULL, refresh_token TEXT NOT NULL, expires_at    BIGINT NOT NULL, user_id       TEXT, created_at    BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT )`);
 
