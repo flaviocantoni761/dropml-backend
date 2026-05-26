@@ -137,7 +137,7 @@ CLIENT_ID:     process.env.ML_CLIENT_ID,
 CLIENT_SECRET: process.env.ML_CLIENT_SECRET,
 REDIRECT_URI:  process.env.ML_REDIRECT_URI,
 };
-
+console.log('[DEBUG] ML_CLIENT_ID:', process.env.ML_CLIENT_ID);
 async function getValidToken() {
 const token = await dbGet('SELECT * FROM ml_tokens ORDER BY id DESC LIMIT 1');
 if (!token) throw new Error('ML não autenticado. Acesse /auth/login');
