@@ -133,9 +133,9 @@ const ML = {
 BASE:          'https://api.mercadolibre.com',
 AUTH_URL:      'https://auth.mercadolivre.com.br/authorization',
 TOKEN_URL:     'https://api.mercadolibre.com/oauth/token',
-CLIENT_ID:     process.env.ML_CLIENT_ID     || 'SEU_APP_ID_AQUI',
-CLIENT_SECRET: process.env.ML_CLIENT_SECRET || 'SEU_APP_SECRET_AQUI',
-REDIRECT_URI:  process.env.ML_REDIRECT_URI  || 'http://localhost:3001/auth/callback',
+CLIENT_ID:     process.env.ML_CLIENT_ID,
+CLIENT_SECRET: process.env.ML_CLIENT_SECRET,
+REDIRECT_URI:  process.env.ML_REDIRECT_URI,
 };
 
 async function getValidToken() {
