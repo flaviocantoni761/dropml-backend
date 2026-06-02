@@ -81,7 +81,7 @@ app.get('/api/produtos/buscar', async (req, res) => {
 });
 async function initDB() {
 await pool.query(`CREATE TABLE IF NOT EXISTS ml_tokens ( id            SERIAL PRIMARY KEY, access_token  TEXT NOT NULL, refresh_token TEXT, expires_at    BIGINT NOT NULL, user_id       TEXT, created_at    BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT )`);
-await pool.query(ALTER TABLE ml_tokens ALTER COLUMN refresh_token DROP NOT NULL);
+await pool.query(`ALTER TABLE ml_tokens ALTER COLUMN refresh_token DROP NOT NULL`);
 await pool.query(`CREATE TABLE IF NOT EXISTS products ( id              TEXT PRIMARY KEY, ml_id           TEXT NOT NULL, title           TEXT NOT NULL, image           TEXT, buy_price       REAL NOT NULL, sell_price      REAL NOT NULL, markup          REAL NOT NULL, link            TEXT, rep_score       REAL, supplier_ml_id  TEXT, active          INTEGER DEFAULT 1, created_at      BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT )`);
 
 await pool.query(`CREATE TABLE IF NOT EXISTS customers ( id           TEXT PRIMARY KEY, name         TEXT NOT NULL, email        TEXT, phone        TEXT, address      TEXT, city         TEXT, state        TEXT, zip          TEXT, ml_buyer_id  TEXT, created_at   BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT )`);
