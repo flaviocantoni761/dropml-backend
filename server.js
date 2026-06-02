@@ -229,6 +229,7 @@ client_secret: ML.CLIENT_SECRET,
 code,
 redirect_uri:  ML.REDIRECT_URI,
 });
+console.log('[DEBUG] ML resposta:', JSON.stringify(resp.data));
 
 const { access_token, refresh_token, expires_in, user_id } = resp.data;
 const expires_at = Math.floor(Date.now() / 1000) + expires_in;
