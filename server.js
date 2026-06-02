@@ -213,7 +213,7 @@ attrs ? `Especificações:\n${attrs}` : '',
 // ─── ROTAS: AUTH ML ───────────────────────────────────────────────────────────
 app.get('/auth/login', (req, res) => {
 const state = crypto.randomBytes(16).toString('hex');
-const url = `${ML.AUTH_URL}?response_type=code&client_id=${ML.CLIENT_ID}&redirect_uri=${encodeURIComponent(ML.REDIRECT_URI)}&state=${state}&scope=offline_acess`;
+const url = `${ML.AUTH_URL}?response_type=code&client_id=${ML.CLIENT_ID}&redirect_uri=${encodeURIComponent(ML.REDIRECT_URI)}&state=${state}&scope=offline_access`;
 res.redirect(url);
 });
 
