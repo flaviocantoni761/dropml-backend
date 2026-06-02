@@ -237,7 +237,7 @@ const expires_at = Math.floor(Date.now() / 1000) + expires_in;
 await pool.query('DELETE FROM ml_tokens');
 await pool.query(
   'INSERT INTO ml_tokens (access_token, refresh_token, expires_at, user_id) VALUES ($1,$2,$3,$4)',
-  [access_token, refresh_token, expires_at, user_id]
+  [access_token, refresh_token || null, expires_at, user_id]
 );
 
 res.json({ ok: true, message: 'Autenticado com Mercado Livre!', user_id });
