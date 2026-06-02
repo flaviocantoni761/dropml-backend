@@ -218,18 +218,27 @@ res.redirect(url);
 });
 
 app.get('/auth/callback', async (req, res) => {
-const { code } = req.query;
-if (!code) return res.status(400).json({ error: 'Código ausente' });
+  const { code } = req.query;
+  if (!code) return res.status(400).json({ error: 'Código ausente' });
 
-try {
-const resp = await axios.post(ML.TOKEN_URL, {
-grant_type:    'authorization_code',
-client_id:     ML.CLIENT_ID,
-client_secret: ML.CLIENT_SECRET,
-code,
-redirect_uri:  ML.REDIRECT_URI,
-});
-console.log('[DEBUG] ML resposta:', JSON.stringify(resp.data));
+  try {
+    const resp = await axios.post(
+      ML.TOKEN_URL,
+      new URLSearchParams({
+        grant_type:    'authorization_code',
+        client_id:     ML.CLIENT_ID,
+        client_secret: ML.CLIENT_SECRET,
+        code,
+        redirect_uri:  ML.REDIRECT_URI,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        }
+      }
+    );
+    console.log('[DEBUG] ML resposta:', JSON.stringify(resp.data));
 
 const { access_token, refresh_token, expires_in, user_id } = resp.data;
 const expires_at = Math.floor(Date.now() / 1000) + expires_in;
