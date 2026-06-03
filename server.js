@@ -273,7 +273,7 @@ try {
 let url = `${ML.BASE}/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}`;
 if (category) url += `&category=${category}`;
 
-const resp = await axios.get(https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}${category ? "&category="+category : ""});
+const resp = await axios.get('https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(q)}&limit=${limit}${category ? "&category="+category : ""}');
 const items = resp.results || [];
 
 const analyzed = items.map(item => {
