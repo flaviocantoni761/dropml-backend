@@ -9,10 +9,11 @@ let cjTokenExpiry = 0;
 async function getCJToken() {
   if (cjToken && Date.now() < cjTokenExpiry) return cjToken;
 
-  const resp = await axios.post(`${CJ_BASE}/authentication/getAccessToken`, {
-    email: process.env.CJ_EMAIL,
-    password: process.env.CJ_PASSWORD,
-  });
+  const resp = await axios.post(
+    `${CJ_BASE}/authentication/getAccessToken`,
+    { apiKey: CJ_API_KEY },
+    { headers: { 'Content-Type': 'application/json' } }
+  );
 
   if (resp.data.result) {
     cjToken = resp.data.data.accessToken;
@@ -41,7 +42,6 @@ async function buscarProdutosCJ(nome = '', pagina = 1, limite = 20) {
     preco: p.sellPrice,
     imagem: p.productImage,
     categoria: p.categoryName,
-    disponivel: p.productWeight,
     frete_estimado: p.shippingTime,
   }));
 }
