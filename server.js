@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const path       = require('path');
 const nodemailer = require('nodemailer');
 const blingAuth = require('./bling-auth');
+const cjApi = require('./cj-api');
 
 const transporter = nodemailer.createTransport({
 service: 'gmail',
@@ -69,6 +70,7 @@ ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : fal
 });
 blingAuth.initBlingTable(pool);
 blingAuth.registerRoutes(app, pool);
+cjApi.registerRouters(app);
 app.get('/api/produtos/buscar', async (req, res) => {
   try {
     const { q = '', pagina = 1 } = req.query;
