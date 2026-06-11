@@ -36,14 +36,25 @@ async function buscarProdutosCJ(nome = '', pagina = 1, limite = 20) {
 
   if (!resp.data.result) throw new Error('[CJ] Erro na busca: ' + resp.data.message);
 
-  return resp.data.data.list.map(p => ({
+  const MARKUP = 2.5;
+
+return resp.data.data.list.map(p => {
+  const precoFornecedor = parseFloat(p.sellPrice) || 0;
+  const precoVenda = (precoFornecedor * MARKUP).toFixed(2);
+  const margem = (((precoVenda - precoFornecedor) / precoVenda) * 100).toFixed(1);
+  return {
     cj_id: p.pid,
     titulo: p.productNameEn,
-    preco: p.sellPrice,
+    preco_fornecedor: precoFornecedor,
+    preco_venda_sugerido: parseFloat(precoVenda),
+    margem_percent: parseFloat(margem),
     imagem: p.productImage,
     categoria: p.categoryName,
     frete_estimado: p.shippingTime,
-  }));
+    avaliacao: p.productEval || 0,
+    vendas: p.sold || 0,
+  };
+});
 }
 
 function registerRoutes(app) {
