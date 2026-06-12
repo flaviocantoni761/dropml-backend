@@ -1225,8 +1225,27 @@ async function searchProducts() {
     const q2 = q || CAT_DEFAULT_QUERY[cat] || "produto";
     let mlpath = "/sites/MLB/search?q=" + encodeURIComponent(q2) + "&limit=" + limit;
     if (cat) mlpath += "&category=" + cat;
-    const data = await mlFetch(mlpath);
-    results = (data && data.results && data.results.length > 0) ? data.results : getDemoResults(query, cat);
+    try {
+  const res = await fetch(${API_BASE}/cj/buscar?q=${encodeURIComponent(q)}&pagina=1);
+  const data = await res.json();
+  if (data.sucesso && data.produtos.length > 0) {
+    results = data.produtos.map(p => ({
+      id: p.cj_id,
+      title: p.titulo,
+      price: p.preco_fornecedor,
+      maxPrice: p.preco_venda_sugerido,
+      spread: p.margem_percent,
+      thumbnail: p.imagem,
+      permalink: 'https://cjdropshipping.com/product/' + p.cj_id,
+      seller: { seller_reputation: { power_seller_status: 'gold', transactions: { completed: p.vendas || 100 } } },
+      shipping: { free_shipping: false }
+    }));
+  } else {
+    results = getDemoResults(query, cat);
+  }
+} catch(e) {
+  results = getDemoResults(query, cat);
+}
   } else {
     results = getDemoResults(query, cat);
   }
