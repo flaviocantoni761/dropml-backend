@@ -1226,7 +1226,8 @@ async function searchProducts() {
     let mlpath = "/sites/MLB/search?q=" + encodeURIComponent(q2) + "&limit=" + limit;
     if (cat) mlpath += "&category=" + cat;
     try {
- const res = await fetch(API_BASE + '/cj/buscar?q=' + encodeURIComponent(q) + '&pagina=1');
+ const searchTerm = q || cat || 'product';
+const res = await fetch(API_BASE + '/cj/buscar?q=' + encodeURIComponent(searchTerm) + '&pagina=1');
   const data = await res.json();
   if (data.sucesso && data.produtos.length > 0) {
     results = data.produtos.map(p => ({
