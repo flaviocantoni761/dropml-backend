@@ -1409,18 +1409,29 @@ function renderProducts(products) {
 }
 
 // ===================== IMPORT MODAL =====================
-function openImport(id) {
+async function openImport(id) {
   const p = state.products.find(x => x.id === id);
   if (!p) return;
   state.currentImport = p;
 
   document.getElementById('modalImg').src = p.image || '';
-  document.getElementById('modalTitle').textContent = p.title;
-  document.getElementById('modalBuyPrice').textContent = `Compra por: ${fmt(p.price)}`;
+  document.getElementById('modalTitle').textContent = '⏳ Traduzindo...';
+  document.getElementById('modalBuyPrice').textContent = 'Compra por: ' + fmt(p.price);
   document.getElementById('markupSlider').value = 50;
-  updateMarkupPreview();
-
   document.getElementById('importModal').classList.add('show');
+
+  try {
+    const res = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(p.title) + '&langpair=en|pt-BR');
+    const data = await res.json();
+    const translated = data.responseData?.translatedText || p.title;
+    p.titlePT = translated;
+    document.getElementById('modalTitle').textContent = translated;
+  } catch(e) {
+    p.titlePT = p.title;
+    document.getElementById('modalTitle').textContent = p.title;
+  }
+
+  updateMarkupPreview();
 }
 
 function closeModal() {
