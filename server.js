@@ -94,13 +94,11 @@ app.post('/api/listings', async (req, res) => {
       imagem,
     });
 
-    const anuncio = await blingAuth.criarAnuncioBling(pool, produto.id, precoVenda);
-
-    res.json({
-      ok: true,
-      your_listing_id: anuncio.id,
-      url: anuncio.urlAnuncio || '',
-    });
+res.json({
+  ok: true,
+  your_listing_id: produto.id,
+  url: 'https://www.bling.com.br/produtos.php#id=' + produto.id,
+});
   } catch (err) {
     console.error('[Listing] Erro:', err.response?.data || err.message);
     res.status(500).json({ ok: false, error: err.message });
