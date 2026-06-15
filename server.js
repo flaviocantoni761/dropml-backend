@@ -74,7 +74,7 @@ cjApi.registerRoutes(app);
 // ── Canal ML ID via Bling ────────────────────────────────────
 app.get('/api/bling/canais', async (req, res) => {
   try {
-    const result = await blingAuth.blingRequest(pool, 'GET', '/canaisdevenda');
+    const result = await blingAuth.blingRequest(pool, 'GET', '/lojas');
     res.json({ sucesso: true, canais: result.data });
   } catch (err) {
     res.status(500).json({ sucesso: false, erro: err.message });
