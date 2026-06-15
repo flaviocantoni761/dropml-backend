@@ -189,9 +189,20 @@ async function criarProdutoBling(pool, produto) {
     situacao: 'A',
     tipo: 'P',
     formato: 'S',
-    descricaoCurta: produto.titulo,
-    imagensProduto: produto.imagem ? [{ link: produto.imagem }] : [],
+    unidade: 'UN',
+    descricaoCurta: produto.titulo.substring(0, 100),
+    estoque: {
+      minimo: 0,
+      maximo: 999,
+      crossdocking: 1,
+      localizacao: '',
+    },
   };
+
+  if (produto.imagem) {
+    data.imagensProduto = [{ link: produto.imagem }];
+  }
+
   const result = await blingRequest(pool, 'POST', '/produtos', data);
   return result.data;
 }
