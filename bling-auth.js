@@ -208,14 +208,12 @@ async function criarProdutoBling(pool, produto) {
 }
 
 // ── Criar anúncio no ML via Bling ───────────────────────────
-async function criarAnuncioBling(pool, idProdutoBling, precoVenda, idCanal) {
+async function criarAnuncioBling(pool, idProdutoBling, precoVenda) {
   const data = {
-    idProduto: idProdutoBling,
-    idCanal: idCanal || Number(process.env.BLING_CANAL_ML_ID),
+    idLoja: Number(process.env.BLING_CANAL_ML_ID),
     preco: precoVenda,
-    tipo: 'gold_special',
   };
-  const result = await blingRequest(pool, 'POST', '/anunciosmarketplaces', data);
+  const result = await blingRequest(pool, 'POST', '/produtos/' + idProdutoBling + '/vinculosLojas', data);
   return result.data;
 }
 module.exports = {
