@@ -181,7 +181,32 @@ async function buscarProdutosBling(pool, nome = '', pagina = 1) {
   const resultado = await blingRequest(pool, 'GET', `/produtos?${params.toString()}`);
   return resultado?.data || [];
 }
+// ── Criar produto no Bling ───────────────────────────────────
+async function criarProdutoBling(pool, produto) {
+  const data = {
+    nome: produto.titulo,
+    preco: produto.precoVenda,
+    situacao: 'A',
+    tipo: 'P',
+    formato: 'S',
+    descricaoCurta: produto.titulo,
+    imagensProduto: produto.imagem ? [{ link: produto.imagem }] : [],
+  };
+  const result = await blingRequest(pool, 'POST', '/produtos', data);
+  return result.data;
+}
 
+// ── Criar anúncio no ML via Bling ───────────────────────────
+async function criarAnuncioBling(pool, idProdutoBling, precoVenda, idCanal) {
+  const data = {
+    idProduto: idProdutoBling,
+    idCanal: idCanal || Number(process.env.BLING_CANAL_ML_ID),
+    preco: precoVenda,
+    tipo: 'gold_special',
+  };
+  const result = await blingRequest(pool, 'POST', '/anunciosmarketplaces', data);
+  return result.data;
+}
 module.exports = {
   initBlingTable,
   registerRoutes,
@@ -189,6 +214,8 @@ module.exports = {
   blingRequest,
   refreshBlingToken,
   buscarProdutosBling,
+  criarProdutoBling,
+  criarAnuncioBling,
 };
 
 
