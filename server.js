@@ -85,6 +85,7 @@ app.get('/api/bling/canais', async (req, res) => {
 app.post('/api/listings', async (req, res) => {
   try {
     const { cj_id, titulo, preco_fornecedor, imagem, markup } = req.body;
+    console.log('[Listing] Body:', JSON.stringify(req.body));
     const precoVenda = preco_fornecedor * (1 + markup / 100);
 
     const produto = await blingAuth.criarProdutoBling(pool, {
