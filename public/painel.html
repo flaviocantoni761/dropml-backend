@@ -1468,13 +1468,19 @@ async function confirmImport() {
   if (!OFFLINE_MODE) {
     try {
       // Criar anúncio real na conta ML via backend
-      const res = await fetch(`${API_BASE.replace('/api','')}/api/listings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ml_id: p.id, markup })
-      });
+      const res = await fetch(API_BASE + '/listings', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    cj_id: p.id,
+    titulo: p.titlePT || p.title,
+    preco_fornecedor: p.price,
+    imagem: p.image || p.thumbnail || '',
+    markup
+  })
+});
       const data = await res.json();
       if (data.ok) {
         state.store.push({ ...p, sellPrice, markup, yourListingId: data.your_listing_id, mlUrl: data.url });
