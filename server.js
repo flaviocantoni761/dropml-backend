@@ -71,6 +71,40 @@ ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : fal
 blingAuth.initBlingTable(pool);
 blingAuth.registerRoutes(app, pool);
 cjApi.registerRoutes(app);
+// ── Canal ML ID via Bling ────────────────────────────────────
+app.get('/api/bling/canais', async (req, res) => {
+  try {
+    const result = await blingAuth.blingRequest(pool, 'GET', '/canaisdevenda');
+    res.json({ sucesso: true, canais: result.data });
+  } catch (err) {
+    res.status(500).json({ sucesso: false, erro: err.message });
+  }
+});
+
+// ── Publicar produto via Bling → ML ─────────────────────────
+app.post('/api/listings', async (req, res) => {
+  try {
+    const { cj_id, titulo, preco_fornecedor, imagem, markup } = req.body;
+    const precoVenda = preco_fornecedor * (1 + markup / 100);
+
+    const produto = await blingAuth.criarProdutoBling(pool, {
+      titulo,
+      precoVenda,
+      imagem,
+    });
+
+    const anuncio = await blingAuth.criarAnuncioBling(pool, produto.id, precoVenda);
+
+    res.json({
+      ok: true,
+      your_listing_id: anuncio.id,
+      url: anuncio.urlAnuncio || '',
+    });
+  } catch (err) {
+    console.error('[Listing] Erro:', err.response?.data || err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
 app.get('/api/produtos/buscar', async (req, res) => {
   try {
     const { q = '', pagina = 1 } = req.query;
