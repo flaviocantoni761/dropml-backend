@@ -200,8 +200,19 @@ async function criarProdutoBling(pool, produto) {
   };
 
   if (produto.imagem) {
-    data.imagensProduto = [{ link: produto.imagem }];
+  try {
+    const imgResp = await axios.get(produto.imagem, { responseType: 'arraybuffer' });
+    const base64 = Buffer.from(imgResp.data).toString('base64');
+    const ext = produto.imagem.split('.').pop().split('?')[0] || 'jpg';
+    data.imagensProduto = [{
+      link: produto.imagem,
+      tipoArquivo: ext.toLowerCase(),
+      conteudo: base64,
+    }];
+  } catch(e) {
+    console.log('[Bling] Imagem nao carregada:', e.message);
   }
+}
 
   const result = await blingRequest(pool, 'POST', '/produtos', data);
   return result.data;
